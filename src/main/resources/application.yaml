@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: autoteka
+server:
+  port: 8003
