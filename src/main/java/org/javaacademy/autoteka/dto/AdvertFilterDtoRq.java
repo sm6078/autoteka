@@ -1,19 +1,14 @@
 package org.javaacademy.autoteka.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class AdvertDtoRs {
-    private String uuid;
+public class AdvertFilterDtoRq {
     private String brand;
     private String color;
     private BigDecimal price;
     private String model;
-    private LocalDate postingDate;
 }

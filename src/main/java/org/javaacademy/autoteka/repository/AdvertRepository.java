@@ -1,10 +1,16 @@
 package org.javaacademy.autoteka.repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.NonNull;
 import org.javaacademy.autoteka.entity.Advert;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 @Component
 public class AdvertRepository {
@@ -30,11 +36,61 @@ public class AdvertRepository {
     /**
      * Find Advertisement by key
      *
-     * @param key unique number
-     * @return Optional<Advertisement> result find
+     * @param id unique number
+     * @return Optional result find
      */
-    public Optional<Advert> findByKey(@NonNull String key) {
-        return Optional.ofNullable(adverts.get(key));
+    public Optional<Advert> findById(@NonNull String id) {
+        return Optional.ofNullable(adverts.get(id));
+    }
+
+    /**
+     * Find Advertisement by brand
+     *
+     * @param brand brand
+     * @return List
+     */
+    public List<Advert> findByBrand(@NonNull String brand) {
+        return adverts.values().stream().filter(e -> e.getBrand().equals(brand)).toList();
+    }
+
+    /**
+     * Find Advertisement by color
+     *
+     * @param color color
+     * @return List
+     */
+    public List<Advert> findByColor(@NonNull String color) {
+        return adverts.values().stream().filter(e -> e.getColor().equals(color)).toList();
+    }
+
+    /**
+     * Find Advertisement by price
+     *
+     * @param price price
+     * @return List
+     */
+    public List<Advert> findByPrice(@NonNull BigDecimal price) {
+        return adverts.values().stream().filter(e -> e.getPrice().compareTo(price) == 0).toList();
+    }
+
+    /**
+     * Find Advertisement by model
+     *
+     * @param model price
+     * @return List
+     */
+    public List<Advert> findByModel(@NonNull String model) {
+        return adverts.values().stream().filter(e -> e.getModel().equals(model)).toList();
+    }
+
+    /**
+     * Find all Adverts by date
+     *
+     * @param date date for search
+     * @return List
+     */
+    public List<Advert> findByDate(@NonNull LocalDate date) {
+        return adverts.values().stream().filter(e -> e.getPostingDate().isEqual(date)).toList();
     }
 
     /**
@@ -54,14 +110,5 @@ public class AdvertRepository {
     public boolean deleteAll() {
         adverts.clear();
         return adverts.isEmpty();
-
-    }
-
-    /**
-     * Return total count records in repo
-     *
-     */
-    public int getTotalCount() {
-        return adverts.size();
     }
 }

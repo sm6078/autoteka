@@ -1,10 +1,9 @@
 package org.javaacademy.autoteka.entity;
 
-import lombok.Data;
-import lombok.NonNull;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import lombok.Data;
+import lombok.NonNull;
 
 @Data
 public class Advert {
