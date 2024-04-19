@@ -1,5 +1,11 @@
 package org.javaacademy.autoteka.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.javaacademy.autoteka.dto.AdvertDtoRq;
@@ -9,17 +15,14 @@ import org.javaacademy.autoteka.entity.Advert;
 import org.javaacademy.autoteka.repository.AdvertRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class AdvertService {
     private final AdvertRepository advertRepository;
 
     public AdvertDtoRs create(@NonNull AdvertDtoRq dto) {
-        Advert ad = new Advert(dto.getBrand(), dto.getColor(), dto.getPrice(), dto.getModel(), dto.getPostingDate());
+        Advert ad = new Advert(dto.getBrand(), dto.getColor(),
+                dto.getPrice(), dto.getModel(), dto.getPostingDate());
         advertRepository.add(ad);
         return convertToDtoRs(ad);
     }
@@ -59,37 +62,50 @@ public class AdvertService {
 
     public List<AdvertDtoRs> getByParameters(AdvertFilterDtoRq options) {
         List<Advert> list = new ArrayList<>();
-        Set<Advert> result = new HashSet<>();
-        if (options.getBrand() == null && options.getColor() == null && options.getPrice() == null && options.getModel() == null) {
+        Set<Advert> set;
+        if (options.getBrand() == null && options.getColor() == null
+                && options.getPrice() == null
+                && options.getModel() == null) {
             return getAll();
         } else {
             if (options.getBrand() != null) {
-                List<Advert> temp = advertRepository.findByBrand(options.getBrand());
-                list = temp;
+                list = advertRepository.findByBrand(options.getBrand());
             }
             if (options.getColor() != null) {
-                List<Advert> temp = advertRepository.findByColor(options.getColor());
-                result = list.stream().distinct().filter(temp::contains).collect(Collectors.toSet());
-                list = result.stream().toList();
-
+                List<Advert> listColor = advertRepository.findByColor(options.getColor());
+                if (list.isEmpty()) {
+                    list = listColor;
+                } else {
+                    set = list.stream().distinct()
+                            .filter(listColor::contains)
+                            .collect(Collectors.toSet());
+                    list = set.stream().toList();
+                }
             }
             if (options.getPrice() != null) {
-                List<Advert> temp = advertRepository.findByPrice(options.getPrice());
-                result = list.stream().distinct().filter(temp::contains).collect(Collectors.toSet());
-                list = result.stream().toList();
-
-
+                List<Advert> listPrice = advertRepository.findByPrice(options.getPrice());
+                if (list.isEmpty()) {
+                    list = listPrice;
+                } else {
+                    set = list.stream().distinct()
+                            .filter(listPrice::contains)
+                            .collect(Collectors.toSet());
+                    list = set.stream().toList();
+                }
             }
             if (options.getModel() != null) {
-                List<Advert> temp = advertRepository.findByModel(options.getModel());
-                if (!result.isEmpty()) {
-                    result = list.stream().distinct().filter(temp::contains).collect(Collectors.toSet());
+                List<Advert> listModel = advertRepository.findByModel(options.getModel());
+                if (list.isEmpty()) {
+                    list = listModel;
                 } else {
-                    result.addAll(temp);
+                    set = list.stream().distinct()
+                            .filter(listModel::contains)
+                            .collect(Collectors.toSet());
+                    list = set.stream().toList();
                 }
             }
         }
-        return dtoRsConvertToList(result);
+        return dtoRsConvertToList(list);
     }
 
     private List<AdvertDtoRs> dtoRsConvertToList(Collection<Advert> adverts) {
