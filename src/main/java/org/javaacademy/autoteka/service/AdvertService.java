@@ -57,12 +57,6 @@ public class AdvertService {
         return advertRepository.deleteAll();
     }
 
-    public List<AdvertDtoRs> getByParameters(String brand, String color, String price, String model) {
-
-
-        return null;
-    }
-
     public List<AdvertDtoRs> getByParameters(AdvertFilterDtoRq options) {
         List<Advert> list = new ArrayList<>();
         Set<Advert> result = new HashSet<>();
